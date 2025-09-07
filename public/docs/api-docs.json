@@ -1,0 +1,489 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "My API",
+        "description": "Документация API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/buildings": {
+            "get": {
+                "tags": [
+                    "Buildings"
+                ],
+                "summary": "Список зданий",
+                "operationId": "704d1f7897ed7a3b8d29dacea66823ad",
+                "responses": {
+                    "200": {
+                        "description": "Список зданий",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Building"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/buildings/{id}": {
+            "get": {
+                "tags": [
+                    "Buildings"
+                ],
+                "summary": "Показать здание",
+                "operationId": "7c2e9a5ec44b127b681717d1d5b91152",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Детали здания",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Building"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/categories": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Список всех категорий",
+                "description": "Возвращает коллекцию категорий",
+                "operationId": "getCategoriesList",
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Category"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/categories/{id}": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Детальная информация о категории",
+                "description": "Возвращает категорию по ID",
+                "operationId": "getCategoryById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID категории",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Категория не найдена"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/companies": {
+            "get": {
+                "tags": [
+                    "Companies"
+                ],
+                "summary": "Получить список компаний",
+                "description": "Возвращает коллекцию компаний с возможностью поиска и фильтров",
+                "operationId": "getCompaniesList",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Фильтр по имени компании",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "ID категории для фильтрации, не использует потомков ищет только по текущей категории",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "categoryName",
+                        "in": "query",
+                        "description": "Имя категории для фильтрации, также ищет по дочерним категориям",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "bbox",
+                        "in": "query",
+                        "description": "Bounding box для фильтрации по координатам: minLat,minLng,maxLat,maxLng",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^-?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?$"
+                        }
+                    },
+                    {
+                        "name": "building_id",
+                        "in": "query",
+                        "description": "ID здания для фильтрации",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список компаний",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Company"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный запрос"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/api/companies/{company}": {
+            "get": {
+                "tags": [
+                    "Companies"
+                ],
+                "summary": "Получить детали компании",
+                "description": "Возвращает детали компании по ID",
+                "operationId": "getCompanyById",
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "path",
+                        "description": "ID компании",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Детали компании",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Company"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Компания не найдена"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Building": {
+                "title": "Building",
+                "description": "Модель здания",
+                "required": [
+                    "city",
+                    "street",
+                    "house_number",
+                    "lat",
+                    "long"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary key",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "city": {
+                        "description": "Город",
+                        "type": "string",
+                        "example": "New York"
+                    },
+                    "street": {
+                        "description": "Название улицы",
+                        "type": "string",
+                        "example": "Broadway"
+                    },
+                    "house_number": {
+                        "description": "Номер дома",
+                        "type": "string",
+                        "example": "123A"
+                    },
+                    "lat": {
+                        "description": "Latitude coordinate",
+                        "type": "number",
+                        "format": "float",
+                        "example": 40.712776
+                    },
+                    "long": {
+                        "description": "Longitude coordinate",
+                        "type": "number",
+                        "format": "float",
+                        "example": -74.005974
+                    },
+                    "created_at": {
+                        "description": "Время создания",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-09-07T12:34:56Z"
+                    },
+                    "updated_at": {
+                        "description": "Время обновления",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-09-07T12:34:56Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Category": {
+                "title": "Category",
+                "description": "Модель категории",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary key",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Название категории",
+                        "type": "string",
+                        "example": "Электроника"
+                    },
+                    "created_at": {
+                        "description": "Дата создания",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-09-07T12:34:56Z"
+                    },
+                    "updated_at": {
+                        "description": "Дата обновления",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-09-07T12:34:56Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Company": {
+                "title": "Company",
+                "description": "Модель компании",
+                "required": [
+                    "name",
+                    "lat",
+                    "long"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary key",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Название компании",
+                        "type": "string",
+                        "example": "Acme Inc."
+                    },
+                    "building_id": {
+                        "description": "ID здания, где находится компания",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 2,
+                        "nullable": true
+                    },
+                    "office_number": {
+                        "description": "Номер офиса",
+                        "type": "string",
+                        "example": "15B",
+                        "nullable": true
+                    },
+                    "lat": {
+                        "description": "Широта компании",
+                        "type": "number",
+                        "format": "float",
+                        "example": 40.712776
+                    },
+                    "long": {
+                        "description": "Долгота компании",
+                        "type": "number",
+                        "format": "float",
+                        "example": -74.005974
+                    },
+                    "created_at": {
+                        "description": "Дата создания записи",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-09-07T12:34:56Z"
+                    },
+                    "updated_at": {
+                        "description": "Дата обновления записи",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-09-07T12:34:56Z"
+                    }
+                },
+                "type": "object"
+            },
+            "CompanyPhone": {
+                "title": "CompanyPhone",
+                "description": "Телефон компании",
+                "required": [
+                    "company_id",
+                    "phone"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary key",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "company_id": {
+                        "description": "ID компании, к которой привязан телефон",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 2
+                    },
+                    "phone": {
+                        "description": "Номер телефона",
+                        "type": "string",
+                        "example": "+1-202-555-0143"
+                    },
+                    "created_at": {
+                        "description": "Дата создания записи",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-09-07T12:34:56Z"
+                    },
+                    "updated_at": {
+                        "description": "Дата обновления записи",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-09-07T12:34:56Z"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearer_token": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Buildings",
+            "description": "API для работы со зданиями"
+        },
+        {
+            "name": "Categories",
+            "description": "API для работы с категориями"
+        },
+        {
+            "name": "Companies",
+            "description": "API для работы с компаниями"
+        }
+    ]
+}
