@@ -44,6 +44,7 @@ setup:
 	@$(MAKE) composer-install
 	@$(MAKE) artisan-key:generate
 	@$(MAKE) artisan-migrate
+	@$(MAKE) seed
 	@$(MAKE) cache-clear
 	@echo "Проект успешно развернут! Доступен на http://localhost:8080"
 # ------------------------------
@@ -84,8 +85,8 @@ migrate:
 migrate-fresh:
 	@$(COMPOSE) exec php-cli php artisan migrate:fresh
 
-db-seed:
-	@$(COMPOSE) exec php-cli php artisan db:seed
+seed:
+	@$(COMPOSE) exec $(APP_CONTAINER) php artisan db:seed --no-interaction
 
 # ------------------------------
 # Очистка кэша
