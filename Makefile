@@ -50,7 +50,7 @@ folders:
 setup:
 	@$(MAKE) env
 	@$(MAKE) build
-	@$(MAKE) upП
+	@$(MAKE) up
 	@$(MAKE) wait-for-container
 	@$(MAKE) folders
 	@$(MAKE) composer-install
