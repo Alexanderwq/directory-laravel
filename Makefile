@@ -11,9 +11,34 @@ APP_CONTAINER = php-fpm
 DB_CONTAINER = $(PROJECT_NAME)_db_1
 
 # ------------------------------
+# Создание .env если его нет
+# ------------------------------
+env:
+	@if [ ! -f .env ]; then \
+		cp .env.example .env; \
+		echo ".env файл создан из .env.example"; \
+	else \
+		echo ".env файл уже существует"; \
+	fi
+
+
+# ------------------------------
+# Создание папок storage и bootstrap/cache
+# ------------------------------
+folders:
+	@$(COMPOSE) exec $(APP_CONTAINER) bash -c "\
+		mkdir -p storage/framework/{views,cache,sessions,testing} bootstrap/cache && \
+		chown -R www-data:www-data storage bootstrap/cache && \
+		chmod -R 775 storage bootstrap/cache \
+	"
+	@echo "Папки storage и bootstrap/cache созданы и права установлены внутри контейнера"
+
+# ------------------------------
 # Полная сборка и запуск проекта
 # ------------------------------
 setup:
+	@$(MAKE) env
+	@$(MAKE) folders
 	@$(MAKE) build
 	@$(MAKE) up
 	@$(MAKE) composer-install
