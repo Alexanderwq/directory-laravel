@@ -5,7 +5,7 @@ PROJECT_NAME = laravel_app
 COMPOSE = docker compose -f docker-compose.yml
 
 # Контейнер приложения (php-fpm)
-APP_CONTAINER = php-fpm
+APP_CONTAINER = php-cli
 
 # Контейнер базы данных (MySQL)
 DB_CONTAINER = $(PROJECT_NAME)_db_1
@@ -23,6 +23,17 @@ env:
 
 
 # ------------------------------
+# Ждём, пока контейнер php-cli будет готов
+# ------------------------------
+wait-for-container:
+	@echo "Ожидание запуска контейнера $(APP_CONTAINER)..."
+	@until $(COMPOSE) exec $(APP_CONTAINER) php -v > /dev/null 2>&1; do \
+		echo "Ждём php-cli..."; \
+		sleep 2; \
+	done
+	@echo "Контейнер $(APP_CONTAINER) готов!"
+
+# ------------------------------
 # Создание папок storage и bootstrap/cache
 # ------------------------------
 folders:
@@ -38,9 +49,10 @@ folders:
 # ------------------------------
 setup:
 	@$(MAKE) env
-	@$(MAKE) folders
 	@$(MAKE) build
-	@$(MAKE) up
+	@$(MAKE) upП
+	@$(MAKE) wait-for-container
+	@$(MAKE) folders
 	@$(MAKE) composer-install
 	@$(MAKE) artisan-key:generate
 	@$(MAKE) artisan-migrate
